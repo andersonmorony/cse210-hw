@@ -4,24 +4,24 @@ namespace Develop02
     public class Journal
     {
         public DateTime _currentDate = DateTime.Now;
-        public List<string> _responses = new List<string>();
+        public List<Entry> _responses = new List<Entry>();
 
         public void AddResponse(Entry entry)
         {
-            string currentDateFormated = entry._currentDate.ToString("MM/dd/yyyy");
-            _responses.Add($"Date: {currentDateFormated} - Prompt: {entry._promptText} \n Response: {entry._entryText} ");
+            _responses.Add(entry);
         }
 
         public void DisplayResponse()
         {
             foreach (var item in _responses)
             {
-                Console.WriteLine(item);
+                Console.WriteLine();
+                item.Display();
                 Console.WriteLine();
             }
         }
 
-        public void updateResponse(List<string> data)
+        public void updateResponse(List<Entry> data)
         {
             _responses = data;
         }

@@ -9,36 +9,40 @@
         {
             _filename = filename;
         }
-        public void saveFile(List<string> responses)
+        public void saveFile(List<Entry> responses)
         {
             using (StreamWriter outputFile = new StreamWriter(_filename))
             {
                 // You can add text to the file with the WriteLine method
                 foreach (var item in responses)
                 {
-                    outputFile.WriteLine(item);
-                    outputFile.WriteLine();
+                    string currentDateFormated = item._currentDate.ToString("MM/dd/yyyy");
+                    outputFile.WriteLine($"Date: {currentDateFormated} - Prompt: {item._promptText}");
+                    outputFile.WriteLine(item._entryText);
                 }
             }
         }
 
-        public List<string> loadFile(string filename)
+        public List<Entry> loadFile(string filename)
         {
             try
             {
-                var data = new List<string>();
+                var data = new List<Entry>();
+                var currentEntry =  new Entry();
                 string[] lines = File.ReadAllLines(filename);
-                foreach (var line in lines)
+
+                for (int i = 0; i < lines.Length; i+=2)
                 {
-                    data.Add(line);
+                    data.Add(new Entry { _promptText = lines[i], _entryText = lines[i + 1] });
                 }
 
                 return data;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine($"Ops, {filename} can't be found or not exit, please try again.");
+                Console.WriteLine(ex.ToString());
+                //Console.WriteLine($"Ops, {filename} can't be found or not exit, please try again.");
                 return null;
             }
         }
