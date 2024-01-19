@@ -69,11 +69,13 @@ class Program
 
         void writeJournal()
         {
+            var entry = new Entry();
             var prompt = promptGenerator.DisplayRandomQuestionsPrompts();
             Console.WriteLine(prompt);
-            string response = Console.ReadLine();
+            entry._promptText = prompt;
+            entry._entryText = Console.ReadLine();
             Console.WriteLine();
-            currentJornal.AddResponse(prompt, response);
+            currentJornal.AddResponse(entry);
         }
 
     }

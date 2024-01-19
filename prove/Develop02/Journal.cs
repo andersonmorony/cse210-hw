@@ -3,13 +3,13 @@ namespace Develop02
 {
     public class Journal
     {
+        public DateTime _currentDate = DateTime.Now;
         public List<string> _responses = new List<string>();
 
-        public void AddResponse(string prompt, string response)
+        public void AddResponse(Entry entry)
         {
-            DateTime currentDate = DateTime.Now;
-            string currentDateFormated = currentDate.ToString("MM/dd/yyyy");
-            _responses.Add($"Date: {currentDateFormated} - Prompt: {prompt} \n Response: {response} ");
+            string currentDateFormated = entry._currentDate.ToString("MM/dd/yyyy");
+            _responses.Add($"Date: {currentDateFormated} - Prompt: {entry._promptText} \n Response: {entry._entryText} ");
         }
 
         public void DisplayResponse()
