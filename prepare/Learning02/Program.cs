@@ -4,22 +4,49 @@ class Program
 {
     static void Main(string[] args)
     {
-        Job job1 = new Job();
-        job1._jobTitle = "Sr Software Engineer";
-        job1._company = "Avanade";
-        job1._startYear = "2017";
-        job1._endYear = "2022";
+        var quarto = new Quarto();
+        quarto._porta = new Porta { nome = "Porta Branca" };
 
-        Job job2 = new Job();
-        job2._jobTitle = "Sr Software Engineer";
-        job2._company = "Jump Label";
-        job2._startYear = "2023";
-        job2._endYear = "Current";
+        var janelaDaFrente = new Janela();
+        janelaDaFrente.Altura = 1;
+        janelaDaFrente.Largura = 2;
 
-        Resume myResume = new Resume();
-        myResume._jobs.Add(job1);
-        myResume._jobs.Add(job2);
-        myResume._name = "Anderson Moroni";
-        myResume.DisplayResumeDetails();
+        var janeladeTras = new Janela();
+
+
+        quarto._janelas.Add(janelaDaFrente);
+        quarto._janelas.Add(janeladeTras);
+
+        Console.WriteLine(quarto._porta.nome);
+
+        quarto.mostrar();
     }
+
+}
+
+class Quarto
+{
+    public List<Janela> _janelas = new List<Janela>(); 
+    public string _cama = "";
+    public string _paredes = "";
+    public Porta _porta = new Porta();
+
+    public void mostrar()
+    {
+        foreach (var item in _janelas)
+        {
+            Console.WriteLine(item.Largura);
+        }
+    }
+}
+
+class Janela
+{
+    public double Altura = 2.55;
+    public double Largura = 1.79;
+}
+
+class Porta
+{
+    public string nome = "";
 }
