@@ -31,6 +31,10 @@ namespace Develop04
         {
             _seconds = second;
         }
+        public virtual void Run()
+        {
+
+        }
 
         public void DisplayWelcomeMessage()
         {

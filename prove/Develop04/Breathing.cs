@@ -14,7 +14,7 @@ namespace Develop04
 
         }
 
-        public void Start()
+        public override void Run()
         {
             // Display message
             base.DisplayWelcomeMessage();

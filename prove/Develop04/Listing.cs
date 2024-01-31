@@ -34,6 +34,7 @@ namespace Develop04
 
                 DateTime current = DateTime.Now;
                 DateTime futureDate = current.AddSeconds(_seconds);
+                _answers = new List<string>();
 
                 while (current < futureDate)
                 {

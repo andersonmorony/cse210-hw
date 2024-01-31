@@ -6,9 +6,12 @@ class Program
     static void Main(string[] args)
     {
         string choosed = string.Empty;
-        var breatinhgActivity = new Breathing("Welcome to the breating activity.", "This activity will help you relax by walking your though breathing in and out slowly. Clear you mind and focus on your breating.");
-        var reflectionActivity = new Reflection("Welcome to the Reflection activity.", "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.");
-        var listingActivity = new Listing("Welcome to the Listing activity.", "his activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.");
+        List<Activity> _activities = new()
+        {
+            new Breathing("Welcome to the breating activity.", "This activity will help you relax by walking your though breathing in and out slowly. Clear you mind and focus on your breating."),
+            new Reflection("Welcome to the Reflection activity.", "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area."),
+            new Listing("Welcome to the Listing activity.", "his activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.")
+        };
 
         while (choosed != "4")
         {
@@ -38,17 +41,27 @@ class Program
 
         void Breathing()
         {
-            breatinhgActivity.Start();
+            // To don't let explict declaretion I used the polymorphism and created a virtual method Run() 
+
+            var breateing = _activities[0];
+            breateing.Run();
         }
 
         void Reflection()
         {
-            reflectionActivity.Run();
+            // To don't let explict declaretion I used the polymorphism and created a virtual method Run() 
+
+            var reflection = _activities[1];
+            reflection.Run();
         }
 
         void Listing()
         {
-            listingActivity.Run();
+            // Here I did the explict declaretion
+            // which is the best pratic?
+
+            Listing listing = (Listing)_activities[2];
+            listing.Run();
         }
     }
 }
