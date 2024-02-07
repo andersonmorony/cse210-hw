@@ -1,9 +1,13 @@
+using Develop05;
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello Develop05 World!");
+       GoalManager manager = new GoalManager();
+        manager.Start();
     }
+    
 }
