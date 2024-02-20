@@ -5,13 +5,11 @@ namespace FinalProject
     public class PokemonDetails : Pokemon
     {
         private List<Stats> _stats;
-
         public PokemonDetails(string name, string url, List<Stats> stats, int id): base(name, url, id)
         {
             _stats = stats;
             base.SetHp(stats.FirstOrDefault(x => x.stat.name.ToUpper() == "HP").base_stat);
         }
-
         public override PokemonJson GeneratePokeJson()
         {
             return new PokemonJson()
@@ -36,16 +34,18 @@ namespace FinalProject
             }
             Console.WriteLine($"Effort: {base._effort.GetEffortUsed()}/{base._effort.GetEffort()}");
         }
-
+        public override void HealingPokemon()
+        {
+            int hp = _stats.FirstOrDefault(x => x.stat.name.ToUpper() == "HP").base_stat;
+            base.SetHp(hp);
+        }
         public override int GetAttack()
         {
             return _stats.FirstOrDefault(x => x.stat.name == "attack").base_stat;
         }
-
         public override int GetDefense()
         {
             return _stats.FirstOrDefault(x => x.stat.name == "defense").base_stat;
         }
-
     }
 }

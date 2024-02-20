@@ -1,4 +1,6 @@
 ﻿using FinalProject.Services;
+using Newtonsoft.Json;
+using System;
 using System.Text.Json;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -30,7 +32,7 @@ namespace FinalProject
             }
             else if(choose == "2")
             {
-                LoadGame();
+                LoadGame().Wait();
             }
 
             Menu();
@@ -45,7 +47,6 @@ namespace FinalProject
                 Console.WriteLine("Congrats you cath one pokemon, named '" + _ownPokemons.First().GetName() + "', you new friend!");
                 _animation.ShowAnimation(1);
         }
-      
         public void Menu()
         {
             var optionChoosed = string.Empty;
@@ -68,16 +69,54 @@ namespace FinalProject
                     case "2":
                         StartBattle();
                         break;
+                    case "3":
+                        HealingPokemon();
+                        break;
                     case "4":
                         SaveGame();
+                        break;
+                    case "0":
+                        System.Environment.Exit(0);
                         break;
                 }
             }
 
         }
-        public void LoadGame()
+        async public Task LoadGame()
         {
+            try
+            {
+                Console.Clear();
+                Console.Write("Prompt the filename: ");
+                var filename = Console.ReadLine();
+                var pokemons = LoadJson(filename);
 
+                foreach ( var pokemon in pokemons )
+                {
+                    var pokemonDatails = await _pokemonService.GetPokemonDetails(pokemon.Url);
+                    _ownPokemons.Add(new PokemonDetails(pokemonDatails.name, pokemon.Url, pokemonDatails.stats, pokemonDatails.id));
+                }
+                Console.WriteLine("Loading...");
+                _animation.ShowAnimation(3);
+                Console.WriteLine("Completed, You Import all your pokemons!!!");
+                _animation.ShowAnimation(3);
+                Menu();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load {ex.Message}");
+                Console.WriteLine("Filename don't found");
+                Start();
+            }
+        }
+        public List<PokemonJson> LoadJson(string filename)
+        {
+            using (StreamReader r = new StreamReader(filename))
+            {
+                string json = r.ReadToEnd();
+                var pokemons = JsonConvert.DeserializeObject<List<PokemonJson>>(json);
+                return pokemons;
+            }
         }
         public void SaveGame()
         {
@@ -89,7 +128,7 @@ namespace FinalProject
                 pokemon.Add(item.GeneratePokeJson());
             }
 
-            var json = JsonSerializer.Serialize(pokemon);
+            var json = System.Text.Json.JsonSerializer.Serialize(pokemon);
             Console.WriteLine(json);
             Console.WriteLine("Important! the extension should be .json");
             string filename = Console.ReadLine();
@@ -100,6 +139,7 @@ namespace FinalProject
         }
         private void StartBattle()
         {
+            Console.Clear();
             var battle = new Battle(_ownPokemons, _pokemonService);
             battle.Start();
         }
@@ -110,6 +150,36 @@ namespace FinalProject
                 poke.DisplayPokemonInformation();
                 Console.WriteLine("\n -------------------- \n");
             }
+        }
+        private void HealingPokemon()
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("Your pokemons:");
+
+                int index = 1;
+                foreach (var pokemon in _ownPokemons)
+                {
+                    Console.WriteLine($"{index} - {pokemon.GetName()}");
+                    index++;
+                }
+                Console.Write("\nChoose one pokemon: ");
+                var choose = int.Parse(Console.ReadLine());
+                _ownPokemons[choose - 1].HealingPokemon();
+
+                Console.WriteLine("\nWe are taking care of your pokemon, it will take some seconds...");
+                _animation.ShowAnimation(3);
+
+                Console.WriteLine("Uhuuu, all was well, you pokemon are well!");
+                _animation.ShowAnimation(3);
+                Console.Clear();
+            }catch (Exception ex)
+            {
+                Console.WriteLine("We are unvalible now, please ty again in some seconds.");
+            }
+
+
         }
     }
 }

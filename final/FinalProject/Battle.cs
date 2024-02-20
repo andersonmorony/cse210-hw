@@ -22,50 +22,68 @@ namespace FinalProject
         }
         public List<Pokemon> Start()
         {
-            // Start the battle
-            Step1().Wait(); // Choose in user poke list the pokemon to battle
-            Step2(); // Choose whether will attack or not
-            Step3(); // Catch pokemon
+            try
+            {
+                // Start the battle
+                Step1(); // Choose in user poke list the pokemon to battle
+                Step2(); // Choose whether will attack or not
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             return _pokemonUserList;
         }
-        async public Task Step1()
+        private void Step1()
         {
-            // Choose random the Enemy to battle
-            await SetPokemonEnemy();
-            Console.WriteLine($"You Enemy will be {_pokemonEnemy.GetName()}");
-            _pokemonEnemy.DisplayPokemonInformation();
-
-            // Choose a pokemon of user enable pokemon
-            ChoosePokemon();
-            Console.WriteLine("You poke is: ");
-            _pokemonChoosed.DisplayPokemonInformation();
-        }
-        public void Step2()
-        {
-            Console.WriteLine("Choose one action:");
-            Console.WriteLine("1 - Start Battle");
-            Console.WriteLine("2 - Choose other Enemy");
-            Console.WriteLine("0 - Get out");
-            string chooseMenu = Console.ReadLine();
-
-            switch (chooseMenu)
+            try
             {
-                case "1":
-                    Fight();
-                    break;
-                case "2":
-                    break;
+                // Choose a pokemon of user enable pokemon
+                ChoosePokemon();
+                Console.WriteLine("You poke is: ");
+                _pokemonChoosed.DisplayPokemonInformation();
+                 GetEnemy().Wait();
+            }
+            catch(NullReferenceException ex)
+            {
+                Console.Clear();
+                Console.WriteLine("You need Choose one pokemon");
+                Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error {ex.Message}");
             }
         }
-        public void Step3()
+        private void Step2()
         {
-            if( _pokemonEnemy.GetHp() <= 0 )
+            string chooseMenu = string.Empty;
+
+            while (chooseMenu != "0")
             {
-                CatchPokemon();
+                Console.WriteLine("Choose one action:");
+                Console.WriteLine("1 - Start Battle");
+                Console.WriteLine("2 - Choose other Enemy");
+                Console.WriteLine("0 - Get out");
+                chooseMenu = Console.ReadLine();
+
+                switch (chooseMenu)
+                {
+                    case "1":
+                        Fight();
+                        if (_pokemonEnemy.GetHp() <= 0)
+                        {
+                            CatchPokemon();
+                        }
+                        break;
+                    case "2":
+                        GetEnemy().Wait();
+                        break;
+                }
             }
         }
-        public void Fight()
+        private void Fight()
         {
             bool isContinue = true;
             Console.WriteLine("The battle begins with both Pokémon on opposite sides of the battlefield, ready to engage in combat\n");
@@ -90,13 +108,19 @@ namespace FinalProject
                     break;
                 }
             }
-
-
         }
-        public void CatchPokemon()
+        async private Task GetEnemy()
+        {
+            // Choose random the Enemy to battle
+            await SetPokemonEnemy();
+            Console.WriteLine($"You Enemy will be {_pokemonEnemy.GetName()}");
+            _pokemonEnemy.DisplayPokemonInformation();
+        }
+        private void CatchPokemon()
         {
             Console.WriteLine($"Would you try catch the {_pokemonEnemy.GetName()} for you collection? [Y] or [N]");
             var choose = Console.ReadLine();
+            Console.Clear();
             switch (choose.ToUpper())
             {
                 case "Y":
@@ -117,7 +141,7 @@ namespace FinalProject
                     break;
             }
         }
-        public bool CatchProbability()
+        private bool CatchProbability()
         {
             // return a number with the posibility of 30% of catch the enemy poke.
             Random random = new Random();
@@ -125,7 +149,7 @@ namespace FinalProject
             return prob < 30;
 
         }
-        public bool AttackAndUpdateState(Pokemon pokeInAttack, Pokemon pokeInDefense)
+        private bool AttackAndUpdateState(Pokemon pokeInAttack, Pokemon pokeInDefense)
         {
             Random rand = new Random();
             var randomDefense = rand.Next(pokeInDefense.GetDefense());
@@ -148,24 +172,24 @@ namespace FinalProject
             // If return false is because the pokemon dead and the loop should to finish
             return pokeInDefense.GetHp() >= 0;
         }
-        public void ShowWinnerMessage(Pokemon winner)
+        private void ShowWinnerMessage(Pokemon winner)
         {
             Console.WriteLine($"The {winner.GetName()} winner the battle");
         }
-        public void ChoosePokemon()
+        private void ChoosePokemon()
         {
             // Choose the pokemon to battle against the enemy
             try
             {
+                Console.WriteLine("\nYour pokemons:");
                 int index = 1;
-                Console.WriteLine("Choose you pokemon to battle:");
                 foreach (var poke in _pokemonUserList)
                 {
-                    Console.Write($"\n{index} - {poke.GetName()}");
+                    Console.Write($"{index} - {poke.GetName()}");
                     if(poke.GetHp() <= 0) { Console.Write("[unavailable, need of care]"); }
                     index++;
                 }
-                
+                Console.Write("\nChoose you pokemon to battle: ");
                 int choose = int.Parse(Console.ReadLine());
                 _pokemonChoosed = _pokemonUserList[choose - 1];
 

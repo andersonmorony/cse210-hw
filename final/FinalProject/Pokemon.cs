@@ -41,6 +41,7 @@
         }
         public abstract int GetAttack();
         public abstract int GetDefense();
+        public abstract void HealingPokemon();
         public abstract PokemonJson GeneratePokeJson();
 
     }

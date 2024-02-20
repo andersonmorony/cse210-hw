@@ -8,7 +8,6 @@ namespace FinalProject
 {
     public class PokemonJson
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
     }
